@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<head>
+	<title>TOMATE</title>
+    <meta name="citation_title" content="TOMATE: The Oligo Mass And Tm Estimator">
+    <meta name="citation_author" content="Sharma A">
+    <meta name="citation_date" content="2025">
+    <meta name="citation_publisher" content="Zenodo">
+    <meta name="citation_doi" content="10.5281/zenodo.15163231">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 302 302' stroke-linecap='round' stroke-linejoin='round' fill='none'%3E%3Cpath fill='%23fff' d='M0 69.3C0 31 31 0 69.3 0h163.4C271 0 302 31 302 69.3v163.4c0 38.3-31 69.3-69.3 69.3H69.3C31 302 0 271 0 232.7Z'/%3E%3Cg stroke-width='20'%3E%3Cpath stroke='red' d='M138 18h0c0 27.2-25.5 52.9-39 61.8-13.4 8.8-52.3 29.5-52.3 29.5A47.3 47.3 0 0 0 20 151h0c.1 18 10.5 34.4 26.7 42.3 0 0 39 20.2 52.4 29.5 13.4 9.3 38.9 34 38.9 61.2h0'/%3E%3Cpath stroke='black' d='M20 284h0c0-27.2 25.5-52.9 39-61.8 13.4-8.8 52.3-29.5 52.3-29.5A47.3 47.3 0 0 0 138 151h0a47.3 47.3 0 0 0-26.7-42.3s-39-20.2-52.4-29.5C45.5 69.9 20 45.2 20 18h0m235.3 151.5V48.7a30.7 30.7 0 1 0-61.6 0v120.8A61.3 61.3 0 0 0 224.6 284a61.5 61.5 0 0 0 30.8-114.5Z'/%3E%3C/g%3E%3Cg stroke-width='16'%3E%3Cpath stroke='red' d='M255 222.5a30.5 30.5 0 1 1-61 0 30.5 30.5 0 0 1 61 0ZM224 120v72'/%3E%3Cpath stroke='black' d='M54 31h50zM54 271h50'/%3E%3Cpath stroke='red' d='M54 151h50'/%3E%3C/g%3E%3C/svg%3E" sizes="any" type="image/svg+xml">
+    <style>
+        :root{
+            --colA:#F35AA3 ; --colC:#2D94EC ; --colG:#FBCD61; --colT:#8E44AE; --colerr:red; --colwarn:yellow;
+        }
+        @media (prefers-color-scheme: dark) {
+            body{filter: invert(100%); background: #000}
+            :root{--colA:#0CA55C ; --colC:#D26B13 ; --colG:#04329E; --colT:#71BB51; --colerr:#00ffff; --colwarn:#0000ff;}
+        }
+        @font-face { 
+            font-family: "Sans";
+            font-weight: 400;
+            font-style: normal;
+            src: url(data:font/woff2;base64,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);
+        }
+        body{user-select: none; font-family: Sans, Verdana, Geneva, Tahoma, sans-serif; display: flex; flex-direction: column; align-items: center; }
+        h1 {margin: 0.1lh 0; font-size: 1.8rem; font-variant: small-caps}
+        h4 {display: flex; align-items: center; justify-content: center;margin: 0 0 0.6lh; font-size: 1rem;}
+        details {padding: 0.2lh 0; margin: 0}
+        details > summary {display: flex; list-style-type: none; justify-content: center;}
+        details > summary::after {content: url("data:image/svg+xml,%3Csvg width='1lh' height='1lh' viewBox='0 0 10 10' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='%23000' stroke-width='1.5' stroke-linecap='round' fill='none' stroke-linejoin='round' d='M2 5L5 7.5L8 5'/%3E%3C/svg%3E"); }
+        details[open] > summary:after {content: url("data:image/svg+xml,%3Csvg width='1lh' height='1lh' viewBox='0 0 10 10' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='%23000' stroke-width='1.5' stroke-linecap='round' fill='none' stroke-linejoin='round' d='M8 7.5L5 5L2 7.5'/%3E%3C/svg%3E");}
+        ul {display: flex; flex-direction: column; list-style-type: none; gap: 0.4lh; padding: 0; margin: 0.4lh 1lh;}
+        ul > li {display: flex; flex-direction: row;}
+        ul > li::before {content: url("data:image/svg+xml,%3Csvg width='1lh' height='1lh' viewBox='0 0 10 10' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='%23000' stroke-width='1.5' stroke-linecap='round' fill='none' stroke-linejoin='round' d='M2 4L4 6L2 8'/%3E%3C/svg%3E");}
+        input {border: 0; border-bottom: 2px solid black; background: none ; text-align: right; font-size: 16px; outline: none;}
+        textarea{
+            --nA:0%; --nAC:0%; --nACG:0%; --nACGT: 0%;
+            background: 0% 0% / var(--nACGT) 6px no-repeat linear-gradient(to right, var(--colA) var(--nA), var(--colC) var(--nA), var(--colC) var(--nAC),var(--colG) var(--nAC), var(--colG) var(--nACG), var(--colT) var(--nACG), var(--colT));
+            border: none; font-family: Consolas, Courier, monospace; padding: 5px 10px; margin: 0; resize:vertical}
+        input, textarea{user-select: auto;}
+        .table {display: flex; flex-direction:column; width: 71ch; max-width: 100%; align-content: center; margin-bottom: 10px; border-radius: 5px; overflow: hidden; background-color: rgba(0,0,0,0.2);}
+        .row {display: flex; flex: 1 0; flex-direction: row; padding: 5px 10px}
+        textarea[name="oligoBox"] + .row {display: none}
+        textarea[readonly] {resize: none; padding-top: 10px; outline: none;}
+        .col {display: flex; flex-grow: 1; justify-content: center;}
+        #errmsg, #warnmsg {margin-bottom:5px; font-size: 0.8em}
+        #errmsg:after, #warnmsg:after {content:"\feff"}
+        #errmsg{color:var(--colerr);}
+        #warnmsg{color:var(--colwarn);}
+
+    </style>
+    
+</head>
+
+<body>
+    <h1>TOMATE: The Oligo Mass And Tm Estimator</h1>
+    <h4>A variant-aware oligonucleotide TM calculator by Anuj Sharma&nbsp<a href="https://github.com/rknx"></href><svg xmlns="http://www.w3.org/2000/svg" width="1lh" height="1lh" viewBox="0 0 512 512"><path d="M335 499c-13 0-16-6-16-12l1-70c0-24-8-40-18-48 57-6 117-28 117-126 0-28-10-51-26-69 3-6 11-32-3-67 0 0-21-7-70 26-42-12-86-12-128 0-49-33-70-26-70-26-14 35-6 61-3 67-16 18-26 41-26 69 0 98 59 120 116 126-7 7-14 18-16 35-15 6-52 17-74-22 0 0-14-24-40-26 0 0-25 0-1 16 0 0 16 7 28 37 0 0 15 50 86 34l1 44c0 6-3 12-16 12-14 0-12 17-12 17H347s2-17-12-17Z" fill="#000"/></svg></a></h4>
+    
+    <details class="table">
+        <summary>Instructions&nbsp;</summary>
+        <ul>
+            <li style="color:red">This is a beta version for testing.</li>
+            <li>Input DNA sequence into the textarea and press enter.</li>
+            <li>Only A, T, G, and C are valid bases.</li>
+            <li>Enclose polymorphisms with brackets and separate by comma for expansion.<br>
+                E.g., A[T,G,C]A breaks into ATA, AGA, and ACA.</li>
+            <li>Multiple polymorphisms are supported, but should be in the same order. <br>
+                E.g., A[T,G]CA[T,G]C breaks into ATCATC and AGCAGC.</li>     
+            <li>Assumed conditions for Tm: 50 nM concentration, 50 mM Na+, and pH 7.0.</li>
+            <li><span>Tm calculation is based on <a href="https://doi.org/10.1016/s0022-2836(62)80066-7" target="_blank">Marmur and Doty 1979</a> for 8-13 bases and <a href="https://doi.org/10.1093/nar/6.11.3543" target="_blank">Wallace et. al. 1979</a> for 14+ bases.</span></li>
+            <li>Citation:&nbsp;<span id="ref"></span></li>
+        </ul>
+    </details>
+    <div><span id="errmsg"></span><span id="warnmsg"></span></div>
+    <form>
+        <div class="table">
+            <textarea name="oligoBox" rows="6" placeholder="Input DNA sequence here." onInput="fixSeq(event)" onBlur="evalSeq(this.form)" onKeyPress="grabEnt(event)"></textarea>
+            <div class="row">
+                <span class="col">Len: <input name="lnBox" size=3 readonly> bp</span>
+                <span class="col">GC: <input name="gcBox" size=3 readonly> %</span>
+                <span class="col">Tm: <input name="tmBox" size=3 readonly> &#176C</span>
+                <span class="col">Mass: <input name="mmBox" size=4 resadonly> kDa</span>
+            </div>    
+        </div>
+        
+    </form>
+
+    <script lang="Javascript">
+
+        evalSeq = (form) => {
+            form.querySelectorAll("textarea[readonly]").forEach(e => e.parentNode.remove())
+            if (form.oligoBox.value === "") return;
+            errMsg(""); warnMsg("");
+            if (Array.isArray(varsSeqs = parseSeq(form.oligoBox.value))) varsSeqs.forEach( (seq) => {if (seq.length > 0) evalVar(form, seq.replace(/[,\]]/, ""))})
+        }
+
+        fixSeq = (e) => {
+            if (e.data === null) return;
+            cursorPos = e.target.selectionStart;
+            e.target.value = trimSeq(e.target.value);
+            e.target.selectionEnd = cursorPos - (e.data.length - trimSeq(e.data).length);
+            // e.target.style.height = e.target.scrollHeight + "px";
+        }
+
+        grabEnt = (e) => { if (e.key === "Enter") { evalSeq(e.target.form); e.preventDefault(); } }
+
+        evalVar = (form, seq) => {
+            oligoVar = new Oligo(seq)
+            const resDiv = form.querySelector(".table").cloneNode(true);
+            outVarRes(resDiv, oligoVar)
+            const seqBox = resDiv.querySelector("textarea");
+            outVarSeq(seqBox, oligoVar)
+            form.appendChild(resDiv);
+            seqBox.style.height = seqBox.scrollHeight + "px";
+            seqBox.style.cssText += oligoVar.refBar
+        }
+
+        outVarSeq = (el, oligo) => {
+            [...el.attributes].forEach(attr => el.removeAttribute(attr.name));
+            el.readOnly = true;
+            el.value = oligo.Seq.replace(/(.{3})/g,"$1 ").replace(/\s+$/, "");
+            el.style.cssText += oligo.refBar // Object.keys(oligo.refBar).reduce((agg, prop) => el.style.setProperty(prop, oligo.refBar[prop]),"")
+            el.style.height = "0px";
+            el.oncopy = (e) => requestAnimationFrame(() => navigator.clipboard.writeText(e.srcElement.value.replace(/ /g,"")))
+        }
+
+        outVarRes = (el, oligo) => {
+            el.querySelector('input[name="lnBox"]').value = oligo.LN
+            el.querySelector('input[name="gcBox"]').value = oligo.GC
+            el.querySelector('input[name="tmBox"]').value = oligo.Tm
+            el.querySelector('input[name="mmBox"]').value = oligo.MM
+        }
+
+        class Oligo {
+            constructor(seq) {
+                this.Seq = trimSeq(seq);
+                this.LN = this.Seq.length;
+                this.nCount = baseCount(this);
+                this.GC = GC(this).toFixed(2);
+                this.Tm = Tm(this).toFixed(1);
+                this.MM = MM(this.nCount).toFixed(1);
+                this.refBar = refBar(this);
+            }
+        }
+    
+        const trimSeq = (seq) => seq.toUpperCase().replace(/[^\[\]\,ATGC]+/g, "")
+        const trimSeq2 = (seq) => seq.toUpperCase().replace(/[^\[\]\,ATGC]+/g, "").replace(/,(?![^\[]*?\])/g, "").replace(/(?<!\[)\]/g, "")
+        const baseCount = (oligo) => "ACGT".split("").reduce((m,n) => ({...m, [n]: (oligo.Seq.match(RegExp(n, 'g'))||[]).length}),{})
+        const Tm = (oligo) => oligo.LN < 8 ? 0 : (oligo.LN < 14 ? (2 * (oligo.nCount.A + oligo.nCount.T) + 4 * (oligo.nCount.G + oligo.nCount.C)) : (64.9 + 41 * ((oligo.nCount.G + oligo.nCount.C - 16.4) / oligo.LN)))
+        const GC = (oligo) => 100 * ( oligo.nCount.G + oligo.nCount.C ) / oligo.LN
+        const MM = (counts) => Math.max(0, Object.keys(counts).reduce((sum, key) => { return sum + counts[key] * {A:0.3132, C:0.3282, G:.2892,T:.3042}[key]}, -0.6096))
+        const refBar = (oligo, sum = 0, index = "") => Object.keys(oligo.nCount).reduce((agg, key) => {return agg + "--n" + (index += key) + ":" + Math.round((sum += oligo.nCount[key])/ oligo.LN * 100) + "%;";}, ""); //({...agg, ["--n" + (index += key)]: Math.round((sum += oligo.nCount[key])/ oligo.LN * 100) + "%;"}), {});
+
+        // string parsing
+        const findClosingBracket = (seq, start, depth = 1) => {
+            for (let i = start + 1; i < seq.length; i++) {
+                if (seq[i] === '[') break;
+                if (seq[i] === ']') return i;
+            }
+            errMsg("Please remove nested/unbalanced brackets.");
+        };
+
+        const errMsg = (msg) => document.querySelector("#errmsg").textContent = (msg != "" ? "Error: " : "" ) + msg;
+        const warnMsg = (msg) => document.querySelector("#warnmsg").textContent = (msg != "" ? "Warning: " : "" ) + msg;
+
+        const mergeSeqs = (arr1, arr2) => {
+            if (arr1.length == 0) return arr2;
+            if (arr1.length == 1) return arr2.map(el => arr1[0] + el);
+            if (arr2.length == 1) return arr1.map(el => el + arr2[0]);
+            if (arr1.length == arr2.length) return arr1.map((el, i) => el + arr2[i]);
+            errMsg("Please fix unequal number of variants.");
+        }
+
+        const parseSeq = (seq) => {
+            let result = [""];
+            for (let i = 0; i < seq.length; i++) {
+                if (seq[i] === "[") {
+                    if (typeof (end = findClosingBracket(seq, i)) === "undefined") return;
+                    if (typeof (result = mergeSeqs(result, seq.slice(i + 1, end).split(","))) === "undefined") return;
+                    i = end;
+                }
+                else if (seq[i] === "]") { warnMsg("Unmatched closing brackets are ignored."); continue; }
+                else if (seq[i] === ",") { warnMsg("Commaa outside brackets are ignored."); continue;}
+                else { result = result.map(el => el + seq[i]); }
+            }
+            return result;
+        };
+
+        (() => {
+            getMeta = (name) => document.querySelector('meta[name="citation_'+ name +'"]').content;
+            document.querySelector('#ref').innerHTML = getMeta("author") + ". " + getMeta("date") + ". " + getMeta("title") + ". " + getMeta("publisher") + ". <a href='https://doi.org/" + getMeta("doi") + "'>" + getMeta("doi") + "</a>."
+            document.querySelector('#ref').href = getMeta("doi")
+        })();
+
+    </script>
+
+</body>
